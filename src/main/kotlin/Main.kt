@@ -90,8 +90,8 @@ val derivedInfoParser: Parser.Parser3<Error, String, String, String, Info> =
 
 // If https://youtrack.jetbrains.com/issue/KT-30485 actually gets introduced in Kotlin 1.7, the following would also be possible!
 
-//val test = validatorP<Error, Info, _>(Strategy.Accumulate) { <- Note the underscore
-//    parser(::Info) {
+//val test = parser<Error, Info, _>(Strategy.Accumulate) { <- Note the underscore
+//    deriveFor(::Info) {
 //        Info::long {} *
 //                Info::numbers {} *
 //                Info::special {}
