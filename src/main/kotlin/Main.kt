@@ -5,6 +5,7 @@ sealed class Error(private val reason: String) {
     object StringTooShort : Error("The given String is too short.")
     object MissingNumer : Error("The given String does not contain any numbers.")
     object MissingSpecial : Error("The given String does not contain any special characters.")
+    object InvalidPrefix : Error("The given String has an invalid prefix")
 
     override fun toString(): String = reason
 }
@@ -24,7 +25,11 @@ private val ensureSpecialRule = Rule<Error, String> { value ->
     else Error.MissingSpecial.invalidNel()
 }
 
-private val rules = setOf(ensureLengthRule, ensureNumberRule, ensureSpecialRule)
+private val ensureLongStartsWithX = Rule<Error, String> { value ->
+    if (value.startsWith("X")) value.validNel()
+    else Error.InvalidPrefix.invalidNel()
+}
+
 
 fun combineRulesTest(
     rule1: Rule<Throwable, String>,
@@ -74,7 +79,10 @@ val validInfoInstance = InfoParser(
 val derivedInfoParser: Parser.Parser3<Error, String, String, String, Info> =
     parser(Strategy.FailFast) {
         deriveFor(::Info) {
-            Info::long { + ensureLengthRule } *
+            Info::long {
+                + ensureLengthRule
+                + ensureLongStartsWithX
+            } *
                     Info::numbers { + ensureNumberRule  } *
                     Info::special { + ensureSpecialRule }
         }
@@ -98,12 +106,15 @@ fun main() {
         "short",
         "nonumbers",
         "nospecialseither"
-    ).fold(::println, ::println)
+    ).tap(::println).tapInvalid(::println)
 
     val succeeding = derivedInfoParser(
-        "thisisasufficientlylongStringIhope",
+        "XthisisasufficientlylongStringIhope",
         "this is a string with numbers 22446",
         "This is a string with special characters !?!?!"
-    ).fold(::println, ::println)
+    ).tap(::println).tapInvalid(::println)
+
+    println(failing)
+    println(succeeding)
 
 }
