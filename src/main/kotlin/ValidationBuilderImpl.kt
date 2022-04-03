@@ -10,10 +10,10 @@ fun <E, T> validator(strategy: Strategy, spec: ValidationBuilder<E, T>.() -> Uni
     ValidationBuilderImpl<E, T>(strategy).apply(spec).let { Validator.Default }
 
 
-fun <E, T, P : Parser<E, T>> validatorP(strategy: Strategy, spec: ParserValidationBuilder<E, T>.() -> P): P =
+fun <E, T, P : Parser<E, T>> parser(strategy: Strategy, spec: ParserValidationBuilder<E, T>.() -> P): P =
     ValidationBuilderImpl<E, T>(strategy).spec()
 
-private class ValidationBuilderImpl<E, T>(private val strategy: Strategy) : ValidationBuilder<E, T>,
+private class ValidationBuilderImpl<E, T>(override val strategy: Strategy) : ValidationBuilder<E, T>,
     ParserValidationBuilder<E, T>, ParserSyntaxScope {
 
     private val rules = mutableListOf<Rule<E, T>>()

@@ -72,7 +72,7 @@ val validInfoInstance = InfoParser(
 
 
 val test: Parser.Parser3<Error, String, String, String, Info> =
-    validatorP<Error, Info, Parser.Parser3<Error, String, String, String, Info>>(Strategy.Accumulate) {
+    parser(Strategy.Accumulate) {
         parser(::Info) {
             Info::long {} *             // Validation omitted
                     Info::numbers {} *  // Validation omitted

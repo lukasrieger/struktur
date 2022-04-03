@@ -2,7 +2,7 @@ import arrow.core.ValidatedNel
 
 sealed interface Parser<E, T> {
     fun interface Parser1<E, V, T> : Parser<E, T> {
-        operator fun invoke(first: V): ValidatedNel<E, T>
+        operator fun invoke(a: V): ValidatedNel<E, T>
     }
 
     fun interface Parser2<E, V1, V2, T> : Parser<E, T> {
