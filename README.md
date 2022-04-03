@@ -87,7 +87,7 @@ To aid in the construction of these parser instances, this library offers a DSL 
 ``` kotlin 
 val userParser = validator<UserError, User, _>(Strategy.Accumulate) {
     parser(::User) {
-        User::id { /* validation logic */ } * <---------------|
+        User::id { /* validation logic */ } * <--------------|
                 User::name { /* validation logic */ } * <----| DSL-function to combine rules into parsers 
                 User::age { /* validation logic */ }
    }
