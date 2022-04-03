@@ -30,8 +30,11 @@ private class ValidationBuilderImpl<E, T>(override val strategy: Strategy) : Val
         }
 
 
-    override fun addRule(rule: (T) -> ValidatedNel<E, T>): Rule<E, T> =
+    override fun rule(rule: (T) -> ValidatedNel<E, T>): Rule<E, T> =
         Rule<E, T> { rule(it) }.also(rules::add)
+
+    override operator fun Rule<E, T>.unaryPlus(): Rule<E, T> = rule { this(it) }
+
 
     override operator fun <R> KProperty1<T, R>.invoke(spec: ValidationBuilder<E, R>.() -> Unit): Rule<E, R> =
         getOrCreateBuilder(ValidationBuilder.Companion.Modifier.NonNull).also(spec).let {
@@ -39,7 +42,7 @@ private class ValidationBuilderImpl<E, T>(override val strategy: Strategy) : Val
         }
 
 
-    override fun <V1, V2> parser(
+    override fun <V1, V2> deriveFor(
         constructor: (V1, V2) -> T,
         f: ParserValidationBuilder<E, T>.() -> Parser.Parser2<E, V1, V2, Pair<V1, V2>>
     ): Parser.Parser2<E, V1, V2, T> =
@@ -51,7 +54,7 @@ private class ValidationBuilderImpl<E, T>(override val strategy: Strategy) : Val
             }
         }
 
-    override fun <V1, V2, V3> parser(
+    override fun <V1, V2, V3> deriveFor(
         constructor: (V1, V2, V3) -> T,
         f: ParserValidationBuilder<E, T>.() -> Parser.Parser3<E, V1, V2, V3, Triple<V1, V2, V3>>
     ): Parser.Parser3<E, V1, V2, V3, T> =
@@ -61,7 +64,7 @@ private class ValidationBuilderImpl<E, T>(override val strategy: Strategy) : Val
             }
         }
 
-    override fun <V1, V2, V3, V4> parser(
+    override fun <V1, V2, V3, V4> deriveFor(
         constructor: (V1, V2, V3, V4) -> T,
         f: ParserValidationBuilder<E, T>.() -> Parser.Parser4<E, V1, V2, V3, V4, Tuple4<V1, V2, V3, V4>>
     ): Parser.Parser4<E, V1, V2, V3, V4, T> =
@@ -71,7 +74,7 @@ private class ValidationBuilderImpl<E, T>(override val strategy: Strategy) : Val
             }
         }
 
-    override fun <V1, V2, V3, V4, V5> parser(
+    override fun <V1, V2, V3, V4, V5> deriveFor(
         constructor: (V1, V2, V3, V4, V5) -> T,
         f: ParserValidationBuilder<E, T>.() -> Parser.Parser5<E, V1, V2, V3, V4, V5, Tuple5<V1, V2, V3, V4, V5>>
     ): Parser.Parser5<E, V1, V2, V3, V4, V5, T> =
@@ -83,7 +86,7 @@ private class ValidationBuilderImpl<E, T>(override val strategy: Strategy) : Val
             }
         }
 
-    override fun <V1, V2, V3, V4, V5, V6> parser(
+    override fun <V1, V2, V3, V4, V5, V6> deriveFor(
         constructor: (V1, V2, V3, V4, V5, V6) -> T,
         f: ParserValidationBuilder<E, T>.() -> Parser.Parser6<E, V1, V2, V3, V4, V5, V6, Tuple6<V1, V2, V3, V4, V5, V6>>
     ): Parser.Parser6<E, V1, V2, V3, V4, V5, V6, T> =
@@ -95,7 +98,7 @@ private class ValidationBuilderImpl<E, T>(override val strategy: Strategy) : Val
             }
         }
 
-    override fun <V1, V2, V3, V4, V5, V6, V7> parser(
+    override fun <V1, V2, V3, V4, V5, V6, V7> deriveFor(
         constructor: (V1, V2, V3, V4, V5, V6, V7) -> T,
         f: ParserValidationBuilder<E, T>.() -> Parser.Parser7<E, V1, V2, V3, V4, V5, V6, V7, Tuple7<V1, V2, V3, V4, V5, V6, V7>>
     ): Parser.Parser7<E, V1, V2, V3, V4, V5, V6, V7, T> =

@@ -14,9 +14,13 @@ interface ValidationBuilder<E, T> {
         ) : PropKey<E, T>
     }
 
-    fun addRule(rule: (T) -> ValidatedNel<E, T>): Rule<E, T>
+    fun rule(rule: (T) -> ValidatedNel<E, T>): Rule<E, T>
+
+    operator fun Rule<E, T>.unaryPlus(): Rule<E, T>
+
 
     operator fun <R> KProperty1<T, R>.invoke(spec: ValidationBuilder<E, R>.() -> Unit): Rule<E, R>
+
 
 }
 

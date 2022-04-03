@@ -71,12 +71,12 @@ val validInfoInstance = InfoParser(
 )
 
 
-val test: Parser.Parser3<Error, String, String, String, Info> =
-    parser(Strategy.Accumulate) {
-        parser(::Info) {
-            Info::long {} *             // Validation omitted
-                    Info::numbers {} *  // Validation omitted
-                    Info::special {}    // Validation omitted
+val derivedInfoParser: Parser.Parser3<Error, String, String, String, Info> =
+    parser(Strategy.FailFast) {
+        deriveFor(::Info) {
+            Info::long { + ensureLengthRule } *
+                    Info::numbers { + ensureNumberRule  } *
+                    Info::special { + ensureSpecialRule }
         }
     }
 
@@ -91,8 +91,19 @@ val test: Parser.Parser3<Error, String, String, String, Info> =
 //}
 
 // We semi-automatically derived a constructor for our domain model that performs validation of the input parameters!
-val attempt = test(
-    "short",
-    "nonumbers",
-    "nospecialseither"
-)
+
+
+fun main() {
+    val failing = derivedInfoParser(
+        "short",
+        "nonumbers",
+        "nospecialseither"
+    ).fold(::println, ::println)
+
+    val succeeding = derivedInfoParser(
+        "thisisasufficientlylongStringIhope",
+        "this is a string with numbers 22446",
+        "This is a string with special characters !?!?!"
+    ).fold(::println, ::println)
+
+}
